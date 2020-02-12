@@ -3,11 +3,12 @@ require_relative '../config/environment'
 system('export GOOGLE_APPLICATION_CREDENTIALS="/Users/aditpatel/flatironcode/projects/mod1project.json"')
 
 $prompt =  TTY::Prompt.new
+$pastel = Pastel.new
 
 system('clear')
 
 system('say Hi there     please enter your name')
-name = $prompt.ask("Hi there! Please enter your name to get started")
+name = $prompt.ask("Hi there! Please enter your" + $pastel.bright_cyan.bold(" name ") + "to get started:")
 system('clear')
 
 system('say thanks #{name}, what would you like to do today')
@@ -19,7 +20,7 @@ main_user = User.find_or_create_by(name: name)
 
 while run do 
 
-input = $prompt.select("Thanks #{name}, what would you like to do today") do |menu|
+input = $prompt.select("Thanks " + $pastel.bright_cyan.bold(name) + ' what would you like to do today?') do |menu|
 	menu.choice 'Check Scores', 1
 	menu.choice 'Play a Game', 2
 	menu.choice 'Check Your Feelings', 4
@@ -44,8 +45,8 @@ when 3
 when 4
 	puts "Smile!!"
 	system('say Cheese')
-	Vision.Take_Photo
-	pp Vision.Check_Photo_Faces
+	photo = Vision.Take_Photo
+	pp Vision.Check_Photo_Faces(photo)
 when 5
 	Round.where(user_id: main_user.id).destroy_all
 	puts 'Your score has been cleared'

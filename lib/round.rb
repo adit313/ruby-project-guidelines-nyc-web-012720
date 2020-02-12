@@ -5,21 +5,31 @@ class Round < ActiveRecord::Base
 	def play_game
 		self.introduce_user_to_object
 		self.prompt_photo
-		self.user_input
-		Vision.Take_Photo
-		system ("say Thanks I saw it")
-		self.check_photo
+		photo = Vision.Take_Photo
+		system('clear')
+		# box = TTY::Box.success("Let me see what's in the photo")
+		box = TTY::Box.frame(width: 65, height: 10, align: :center, padding: 4, border: {type: :thick}, style: {fg: :black, bg: :bright_cyan}) do
+			"Let me see what's in the photo"
+		end
+		print box
+		self.check_photo(photo)
 		input = $prompt.yes?("Do you want to play another round")
 		return input
 	end
 
 	def introduce_user_to_object
-		puts "Thanks for playing #{User.find(self.user_id).name}, please go find me a #{self.object}!"
+		puts "Thanks for playing #{User.find(self.user_id).name}, please go find me a:"
+		star_wars = TTY::Font.new(:starwars)
+		box = TTY::Box.frame(width: 200, height: 15, align: :center, padding: 4, border: {type: :thick}, style: {fg: :black, bg: :bright_cyan}) do
+			star_wars.write(self.object)
+		end
+		print box
 	end
 
 	def prompt_photo
-		puts "When you find the object, show it to me by using the webcam. Press enter when I should take a look"
-		puts "It takes me 3 seconds to take a look so hold me steady"
+		puts "When you find the object, take a photo with your camera, and AIRDROP it onto Adit's MacBook Pro"
+		puts "You only have 90 Seconds!!!"
+		puts "P.S. Sorry Android users, but you can't play this game yet!"
 	end
 
 	def user_input
@@ -27,12 +37,12 @@ class Round < ActiveRecord::Base
 		return raw_input
 	end
 
-	def check_photo
-		items_in_photo = Vision.Check_Photo_Stuff
+	def check_photo(photo)
+		items_in_photo = Vision.Check_Photo_Stuff(photo)
 		puts "Thanks, I see #{items_in_photo.join(', ')}"
 		if items_in_photo.find{|e| e == self.object}
 			self.won = true
-			puts "Nice! I see a #{self.object}"
+			puts "Nice! You got the #{self.object}"
 			self.save
 		else
 			puts "I didn't see a #{self.object}"
