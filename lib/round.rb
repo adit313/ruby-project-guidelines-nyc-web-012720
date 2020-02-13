@@ -6,9 +6,9 @@ class Round < ActiveRecord::Base
 		self.introduce_user_to_object
 		self.prompt_photo
 		photo = Vision.Take_Photo
-		system('clear')
+		Vision.clear
 		# box = TTY::Box.success("Let me see what's in the photo")
-		box = TTY::Box.frame(width: 65, height: 10, align: :center, padding: 4, border: {type: :thick}, style: {fg: :black, bg: :bright_cyan}) do
+		box = TTY::Box.frame(width: 126, height: 10, align: :center, padding: 4, border: {type: :thick}, style: {fg: :bright_black, bg: :bright_cyan}) do
 			"Let me see what's in the photo"
 		end
 		print box
@@ -19,8 +19,8 @@ class Round < ActiveRecord::Base
 
 	def introduce_user_to_object
 		puts "Thanks for playing #{User.find(self.user_id).name}, please go find me a:"
-		star_wars = TTY::Font.new(:starwars)
-		box = TTY::Box.frame(width: 200, height: 15, align: :center, padding: 4, border: {type: :thick}, style: {fg: :black, bg: :bright_cyan}) do
+		star_wars = TTY::Font.new(:standard)
+		box = TTY::Box.frame(width: 126, height: 15, align: :center, padding: 4, border: {type: :thick}, style: {fg: :bright_black, bg: :bright_cyan}) do
 			star_wars.write(self.object)
 		end
 		print box

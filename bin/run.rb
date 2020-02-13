@@ -5,11 +5,11 @@ system('export GOOGLE_APPLICATION_CREDENTIALS="/Users/aditpatel/flatironcode/pro
 $prompt =  TTY::Prompt.new
 $pastel = Pastel.new
 
-system('clear')
+Vision.clear
 
 system('say Hi there     please enter your name')
 name = $prompt.ask("Hi there! Please enter your" + $pastel.bright_cyan.bold(" name ") + "to get started:")
-system('clear')
+Vision.clear
 
 system('say thanks #{name}, what would you like to do today')
 
@@ -28,7 +28,7 @@ input = $prompt.select("Thanks " + $pastel.bright_cyan.bold(name) + ' what would
 	menu.choice 'Clear My Scores', 5
 end
 
-system('clear')
+Vision.clear
 
 case input
 when 2
@@ -45,8 +45,10 @@ when 3
 when 4
 	puts "Smile!!"
 	system('say Cheese')
-	photo = Vision.Take_Photo
-	pp Vision.Check_Photo_Faces(photo)
+	path = 'temp_file.jpg'
+	system("imagesnap -w 3 #{path}")
+	puts ""
+	pp Vision.Check_Photo_Faces("/Users/aditpatel/flatironcode/projects/ruby-project-guidelines-nyc-web-012720/temp_file.jpg")
 when 5
 	Round.where(user_id: main_user.id).destroy_all
 	puts 'Your score has been cleared'
